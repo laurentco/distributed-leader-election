@@ -12,40 +12,40 @@ A simple command console allows interactive or scripted testing or replaying of 
 
 For example: This script
 
->online all
-sleep 20
-offline 1
-sleep 20
-online 1
-sleep 20
+>online all  
+sleep 20  
+offline 1  
+sleep 20  
+online 1  
+sleep 20  
 
 ... produces the following output
->1 setup
-2 setup
-3 setup
-4 setup
-5 setup
-\>[Node[id=1], Node[id=2], Node[id=3], Node[id=4], Node[id=5]] onlined
-\>sleeping 20s
-Node[id=3] detects change of master to 1
-Node[id=4] detects change of master to 1
-Node[id=5] detects change of master to 1
-Node[id=1] becomes master
-Node[id=2] detects change of master to 1
-\>[Node[id=1]] offlined
-\>sleeping 20s
-Node[id=2] becomes master
-Node[id=3] detects change of master to 2
-Node[id=5] detects change of master to 2
-Node[id=4] detects change of master to 2
-\>[Node[id=1]] onlined
-\>sleeping 20s
-Node[id=1] gives up master
-Node[id=5] detects change of master to 1
-Node[id=1] becomes master
-Node[id=4] detects change of master to 1
-Node[id=3] detects change of master to 1
-Node[id=2] gives up master
+>1 setup  
+2 setup  
+3 setup  
+4 setup  
+5 setup  
+\>[Node[id=1], Node[id=2], Node[id=3], Node[id=4], Node[id=5]] onlined  
+\>sleeping 20s  
+Node[id=3] detects change of master to 1  
+Node[id=4] detects change of master to 1  
+Node[id=5] detects change of master to 1  
+Node[id=1] becomes master  
+Node[id=2] detects change of master to 1  
+\>[Node[id=1]] offlined  
+\>sleeping 20s  
+Node[id=2] becomes master  
+Node[id=3] detects change of master to 2  
+Node[id=5] detects change of master to 2  
+Node[id=4] detects change of master to 2  
+\>[Node[id=1]] onlined  
+\>sleeping 20s  
+Node[id=1] gives up master  
+Node[id=5] detects change of master to 1  
+Node[id=1] becomes master  
+Node[id=4] detects change of master to 1  
+Node[id=3] detects change of master to 1  
+Node[id=2] gives up master  
 
 License
 ----
