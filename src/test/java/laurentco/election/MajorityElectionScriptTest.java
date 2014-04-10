@@ -1,6 +1,7 @@
 package laurentco.election;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,29 +25,37 @@ public class MajorityElectionScriptTest extends AbstractElectionTest<RunnableTes
 	};
 	
 	public enum Command {
-		online, offline, exit, list
+		online, offline, exit, list, sleep;
 	}
+		
+	private Set<RunnableTestNode> online = new HashSet<RunnableTestNode>();
 	
 	public static void main(String[] args) throws Exception {
-		
 		MajorityElectionScriptTest test = new MajorityElectionScriptTest();
+		test.setUp();
 		test.startThreads();
 		test.executeScript(System.in);
 	}
 	
-	private Set<RunnableTestNode> online = new HashSet<RunnableTestNode>();
-	
-	public MajorityElectionScriptTest() {
-		super(nodes);
+	@Override
+    protected void setUp() throws Exception {
+		super.setUp();
+		addNodes(nodes);		
 		for(int i=0 ; i<nodes.length ; i++)
 			setupNode(nodes[i]);
-	}
+    }
 	
+	public void testBaseCase() throws IOException {
+		startThreads();
+		executeScript(new FileInputStream("base-case.txt"));
+	}
+
 	public void setupNode(RunnableTestNode node) {
 		ElectionTransport transport = new LocalTransport(getKnownNodeMap());
 		TestElection election = new TestElection(getKnownNodeIds(), node.getId());
 		election.setElectionTransport(transport);
 		node.setElection(election);
+		System.out.println(node.getId() + " setup");
 	}
 
 	
@@ -59,7 +68,7 @@ public class MajorityElectionScriptTest extends AbstractElectionTest<RunnableTes
 	public void executeScript(InputStream script) {
 		
 		String command;
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader in = new BufferedReader(new InputStreamReader(script));
 		try {
 			while((command = readCommand(in))!=null && executeCommand(command));
 		} catch(IOException ioe) {
@@ -78,11 +87,11 @@ public class MajorityElectionScriptTest extends AbstractElectionTest<RunnableTes
 
 	public boolean executeCommand(String commandLine) {
 		
-		String commandArgs[] = commandLine.split(" ");
+		final String commandArgs[] = commandLine.split(" ");
 		if(commandArgs.length == 0)
 			return false;
 		try {
-			Command command = Command.valueOf(commandArgs[0]);
+			final Command command = Command.valueOf(commandArgs[0]);
 			if(command==Command.exit) {
 				System.out.println("Quit.");
 				return false;
@@ -118,9 +127,21 @@ public class MajorityElectionScriptTest extends AbstractElectionTest<RunnableTes
 				case list:
 					System.out.println(nodes);
 					return true;
+				case sleep:
+					try {
+						int sleepTime = Integer.parseInt(commandArgs[1]);
+						System.out.println("sleeping " + sleepTime + "s");
+						synchronized(command) {
+							Thread.yield();
+							command.wait(sleepTime*1000);
+						}
+					} catch(Exception e) {
+						e.printStackTrace();
+					}
+					return true;
 			}
 		} catch(IllegalArgumentException iae) {
-			System.out.println("Unknown command!");
+			System.out.println("Unknown command");
 		} catch(ArrayIndexOutOfBoundsException aobe) {
 			System.out.println("Node is unspecified or does not exist!");
 		}

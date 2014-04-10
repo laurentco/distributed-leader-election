@@ -33,9 +33,14 @@ public abstract class AbstractElectionTest<N extends TestNode> extends TestCase 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		this.knownNodes.clear();
 	}
 	
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		this.knownNodes.clear();
+	}
+
 	public Collection<N> getKnownNodes() {
 		return knownNodes.values();
 	}

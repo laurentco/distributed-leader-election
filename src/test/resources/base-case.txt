@@ -1,0 +1,6 @@
+online all
+sleep 20
+offline 1
+sleep 20
+online 1
+sleep 20
